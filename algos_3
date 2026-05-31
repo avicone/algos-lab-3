@@ -1,0 +1,120 @@
+from collections import deque
+
+class Task:
+    def __init__(self, task_id, description, priority):
+        self.id = task_id
+        self.description = description
+        self.priority = priority
+    
+    def __str__(self):
+        return f"Задача #{self.id} | Приоритет: {self.priority} | Описание: {self.description}"
+    
+    def __repr__(self):
+        return self.__str__()
+
+
+class TaskQueue:
+    def __init__(self):
+        self._queue = deque()
+    
+    def enqueue(self, task):
+        if not isinstance(task, Task):
+            raise TypeError("Можно добавить только объект Task")
+        
+        inserted = False
+        for i, existing_task in enumerate(self._queue):
+            if task.priority < existing_task.priority:
+                self._queue.insert(i, task)
+                inserted = True
+                break
+        
+        if not inserted:
+            self._queue.append(task)
+    
+    def dequeue(self):
+        if self.isEmpty():
+            print("Очередь пуста, невозможно извлечь задачу")
+            return None
+        return self._queue.popleft()
+    
+    def front(self):
+        if self.isEmpty():
+            print("Очередь пуста")
+            return None
+        return self._queue[0]
+    
+    def isEmpty(self):
+        return len(self._queue) == 0
+    
+    def clear(self):
+        self._queue.clear()
+        print("Очередь очищена")
+    
+    def size(self):
+        return len(self._queue)
+    
+    def display(self):
+        if self.isEmpty():
+            print("Очередь пуста")
+            return
+        
+        print(f"\n{'='*60}")
+        print(f"Очередь задач (всего задач: {self.size()})")
+        print(f"{'='*60}")
+        for i, task in enumerate(self._queue, 1):
+            print(f"{i}. {task}")
+        print(f"{'='*60}\n")
+
+
+if __name__ == "__main__":
+    task_queue = TaskQueue()
+    
+    print("ТЕСТИРОВАНИЕ ОЧЕРЕДИ ЗАДАЧ")
+    print("=" * 60)
+    
+    print(f"\n1. Очередь пуста? {task_queue.isEmpty()}")
+    
+    print("\n2. Добавление задач:")
+    task_queue.enqueue(Task(1, "Исправить баг в модуле авторизации", 1))
+    task_queue.enqueue(Task(2, "Добавить новую кнопку в интерфейс", 3))
+    task_queue.enqueue(Task(3, "Обновить документацию API", 2))
+    task_queue.enqueue(Task(4, "Критическое обновление безопасности", 0))
+    task_queue.enqueue(Task(5, "Рефакторинг старого кода", 4))
+    
+    task_queue.display()
+    
+    print("\n3. Просмотр задачи с наивысшим приоритетом (front):")
+    front_task = task_queue.front()
+    if front_task:
+        print(f"   → {front_task}")
+    
+    print("\n4. Извлечение задач по приоритету:")
+    for i in range(2):
+        task = task_queue.dequeue()
+        if task:
+            print(f"   Извлечена: {task}")
+    
+    task_queue.display()
+    
+    print("\n5. Добавление срочной задачи:")
+    task_queue.enqueue(Task(6, "Срочный баг-фикс", 0))
+    task_queue.display()
+    
+    print("\n6. Извлечение всех оставшихся задач:")
+    while not task_queue.isEmpty():
+        task = task_queue.dequeue()
+        print(f"   Обработана: {task}")
+    
+    print("\n7. Попытка извлечения из пустой очереди:")
+    task_queue.dequeue()
+    
+    print(f"\n8. Очередь пуста? {task_queue.isEmpty()}")
+    
+    print("\n9. Добавление задач и очистка:")
+    task_queue.enqueue(Task(7, "Тестовая задача 1", 1))
+    task_queue.enqueue(Task(8, "Тестовая задача 2", 2))
+    task_queue.display()
+    task_queue.clear()
+    task_queue.display()
+    
+    print("\n Тестирование завершено!")
