@@ -1,5 +1,6 @@
 from collections import deque
 
+
 class Task:
     def __init__(self, task_id, description, priority):
         self.id = task_id
@@ -30,12 +31,16 @@ class TaskQueue:
         
         if not inserted:
             self._queue.append(task)
+        
+        print(f"Задача добавлена: {task}")
     
     def dequeue(self):
         if self.isEmpty():
             print("Очередь пуста, невозможно извлечь задачу")
             return None
-        return self._queue.popleft()
+        task = self._queue.popleft()
+        print(f"Задача выполнена: {task}")
+        return task
     
     def front(self):
         if self.isEmpty():
@@ -66,55 +71,71 @@ class TaskQueue:
         print(f"{'='*60}\n")
 
 
+def main():
+    queue = TaskQueue()
+    
+    while True:
+        print("\n" + "=" * 60)
+        print("СИСТЕМА ОБРАБОТКИ ЗАДАЧ")
+        print("=" * 60)
+        print("1. Добавить задачу")
+        print("2. Выполнить задачу (извлечь из очереди)")
+        print("3. Показать первую задачу")
+        print("4. Показать все задачи")
+        print("5. Проверить, пуста ли очередь")
+        print("6. Очистить очередь")
+        print("7. Выйти")
+        print("=" * 60)
+        
+        choice = input("Выберите действие (1-7): ")
+        
+        if choice == "1":
+            print("\n--- Добавление новой задачи ---")
+            try:
+                task_id = int(input("Введите ID задачи: "))
+                description = input("Введите описание задачи: ")
+                priority = int(input("Введите приоритет (0 - наивысший): "))
+                
+                queue.enqueue(Task(task_id, description, priority))
+            except ValueError:
+                print("Ошибка: ID и приоритет должны быть числами")
+        
+        elif choice == "2":
+            print("\n--- Выполнение задачи ---")
+            queue.dequeue()
+        
+        elif choice == "3":
+            print("\n--- Первая задача в очереди ---")
+            task = queue.front()
+            if task:
+                print(f"Первая задача: {task}")
+        
+        elif choice == "4":
+            print("\n--- Список всех задач ---")
+            queue.display()
+        
+        elif choice == "5":
+            print("\n--- Проверка очереди ---")
+            if queue.isEmpty():
+                print("Очередь пуста")
+            else:
+                print(f"В очереди {queue.size()} задач(и)")
+        
+        elif choice == "6":
+            print("\n--- Очистка очереди ---")
+            confirm = input("Вы уверены? (да/нет): ")
+            if confirm.lower() == "да":
+                queue.clear()
+            else:
+                print("Очистка отменена")
+        
+        elif choice == "7":
+            print("\nПрограмма завершена")
+            break
+        
+        else:
+            print("\nОшибка: выберите число от 1 до 7")
+
+
 if __name__ == "__main__":
-    task_queue = TaskQueue()
-    
-    print("ТЕСТИРОВАНИЕ ОЧЕРЕДИ ЗАДАЧ")
-    print("=" * 60)
-    
-    print(f"\n1. Очередь пуста? {task_queue.isEmpty()}")
-    
-    print("\n2. Добавление задач:")
-    task_queue.enqueue(Task(1, "Исправить баг в модуле авторизации", 1))
-    task_queue.enqueue(Task(2, "Добавить новую кнопку в интерфейс", 3))
-    task_queue.enqueue(Task(3, "Обновить документацию API", 2))
-    task_queue.enqueue(Task(4, "Критическое обновление безопасности", 0))
-    task_queue.enqueue(Task(5, "Рефакторинг старого кода", 4))
-    
-    task_queue.display()
-    
-    print("\n3. Просмотр задачи с наивысшим приоритетом (front):")
-    front_task = task_queue.front()
-    if front_task:
-        print(f"   → {front_task}")
-    
-    print("\n4. Извлечение задач по приоритету:")
-    for i in range(2):
-        task = task_queue.dequeue()
-        if task:
-            print(f"   Извлечена: {task}")
-    
-    task_queue.display()
-    
-    print("\n5. Добавление срочной задачи:")
-    task_queue.enqueue(Task(6, "Срочный баг-фикс", 0))
-    task_queue.display()
-    
-    print("\n6. Извлечение всех оставшихся задач:")
-    while not task_queue.isEmpty():
-        task = task_queue.dequeue()
-        print(f"   Обработана: {task}")
-    
-    print("\n7. Попытка извлечения из пустой очереди:")
-    task_queue.dequeue()
-    
-    print(f"\n8. Очередь пуста? {task_queue.isEmpty()}")
-    
-    print("\n9. Добавление задач и очистка:")
-    task_queue.enqueue(Task(7, "Тестовая задача 1", 1))
-    task_queue.enqueue(Task(8, "Тестовая задача 2", 2))
-    task_queue.display()
-    task_queue.clear()
-    task_queue.display()
-    
-    print("\n Тестирование завершено!")
+    main()
